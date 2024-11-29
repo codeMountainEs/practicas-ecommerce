@@ -6,7 +6,7 @@
 Clone the repo locally:
 
 ```sh
-git clone https://github.com/codeMountainEs/practicasEcommerce.git practicas-ecommerce && cd practicas-ecommerce
+git clone https://github.com/codeMountainEs/practicas-ecommerce.git practicas-ecommerce && cd practicas-ecommerce
 ```
 
 Install PHP dependencies:
