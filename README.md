@@ -48,3 +48,23 @@ Run database migrations:
 
 -   **Username:** admin@admin.com
 -   **Password:** practicas
+
+
+
+Test
+1.- seguimos la documentacion de instalacion de PEST , quita phpunit , installa pest 
+2.- filamentphp testing 
+     https://pestphp.com/docs/plugins#livewire
+     composer require pestphp/pest-plugin-livewire --dev
+
+2.- creamos .env.testing solo con app_key y database 
+
+
+3.- Creamos un test : sail artisan make:test Front\\Category\\ListCategoriesTest --pest 
+    completar CategoryFactory
+
+
+
+```sh
+./vendor/bin/sail artisan migrate
+```
