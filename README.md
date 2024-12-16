@@ -48,3 +48,19 @@ Run database migrations:
 
 -   **Username:** admin@admin.com
 -   **Password:** practicas
+
+
+* Rama Instalar Preline 
+
+    https://preline.co/docs/frameworks-laravel.html
+
+```sh
+
+    npm install preline 
+
+```
+
+
+* Rama Test
+
+
