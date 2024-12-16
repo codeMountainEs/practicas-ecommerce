@@ -60,6 +60,17 @@ Run database migrations:
 
 ```
 
+* Instalar Livewire
+
+```sh
+
+   composer require livewire/livewire
+php artisan livewire:layout
+php artisan make:livewire HomePage
+
+
+```
+cambiar routes/web.php
 
 * Rama Test
 
