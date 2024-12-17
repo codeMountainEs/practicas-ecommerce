@@ -13,6 +13,8 @@ class ProductSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call(CategorySeeder::class);
+        $this->call(BrandSeeder::class);
         Product::create([
             'name'=>'vaso',
             'description'=>'Un vaso transparente para zumo',
@@ -20,6 +22,8 @@ class ProductSeeder extends Seeder
             'image'=>'url de imagen ficticia',
             'stock'=>'30',
             'isLimited'=>true,
+            'category_id'=>'1',
+            'brand_id'=>'1'
         ]);
         Product::create([
             'name'=>'plato',
@@ -28,6 +32,8 @@ class ProductSeeder extends Seeder
             'image'=>'url de imagen plato',
             'stock'=>'0',
             'isLimited'=>false,
+            'category_id'=>'1',
+            'brand_id'=>'2'
         ]);
         Product::create([
             'name'=>'Paquete cucharas',
@@ -36,6 +42,8 @@ class ProductSeeder extends Seeder
             'image'=>'url de imagen de cucharas',
             'stock'=>'0',
             'isLimited'=>false,
+            'category_id'=>'2',
+            'brand_id'=>'3'
         ]);
         Product::create([
             'name'=>'Paquete de tenedores',
@@ -44,6 +52,8 @@ class ProductSeeder extends Seeder
             'image'=>'url de imagen de tenedores',
             'stock'=>'0',
             'isLimited'=>false,
+            'category_id'=>'2',
+            'brand_id'=>'4'
         ]);
 
     }
