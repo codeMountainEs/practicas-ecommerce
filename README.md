@@ -70,7 +70,16 @@ php artisan make:livewire HomePage
 
 
 ```
-cambiar routes/web.php
+cambiar routes/web.php para ir a HomePage
+
+añaidr a inicio imagenes o banner 
+
+ php artisan make:livewire inicio.Imagenes
+
+
+
+
+
 
 * Rama Test
 
