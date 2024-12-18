@@ -48,3 +48,30 @@ Run database migrations:
 
 -   **Username:** admin@admin.com
 -   **Password:** practicas
+
+
+* Rama Instalar Preline 
+
+    https://preline.co/docs/frameworks-laravel.html
+
+```sh
+
+    npm install preline 
+
+```
+
+* Instalar Livewire
+
+```sh
+
+   composer require livewire/livewire
+php artisan livewire:layout
+php artisan make:livewire HomePage
+
+
+```
+cambiar routes/web.php
+
+* Rama Test
+
+
