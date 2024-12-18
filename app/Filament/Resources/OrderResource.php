@@ -47,8 +47,6 @@ class OrderResource extends Resource
                     ->schema([
                         Forms\Components\TextInput::make('created_at')
                             ->label(__('Fecha'))
-                            ->date('d-m-Y')
-                            ->searchable()
                             ->required(),
                         Forms\Components\Select::make('user_id')
                             ->relationship('user', 'name')
