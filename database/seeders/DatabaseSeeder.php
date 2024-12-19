@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use Database\Seeders\CategorySeeder;
+
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Database\Seeders\ProductSeeder;
@@ -14,7 +16,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        //User::factory(10)->create();
+
+
+        // User::factory(10)->create();
         $this->call(RoleSeeder::class);
 
         User::factory()->create([
@@ -22,6 +26,13 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@admin.com',
             'role_id' => 1,
         ]);
+
+
+        $this->call(BrandSeeder::class);
+        $this->call(CategorySeeder::class);
         $this->call(ProductSeeder::class);
+        $this->call(OrderSeeder::class);
+        $this->call(AddressSeeder::class);
+        $this->call(OrderItemSeeder::class);
     }
 }

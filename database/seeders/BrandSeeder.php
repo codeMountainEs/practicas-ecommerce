@@ -3,9 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\Brand;
-use App\Models\Product;
-use Illuminate\Database\Seeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
 
 class BrandSeeder extends Seeder
 {
@@ -15,25 +14,45 @@ class BrandSeeder extends Seeder
     public function run(): void
     {
         Brand::create([
-            'name'=>'Renberg',
-            'description'=>'Renberg es una marca de origen sueco que se destaca por su relación calidad-precio. Sus cuberterías combinan el acero inoxidable con mangos de polipropileno en colores vibrantes, aportando un toque de originalidad a tu mesa.',
-            'logo' =>"Renberg.jpeg"
-        ]);
-        Brand::create([
-            'name'=>'Zwilling',
-            'description'=>'La marca alemana Zwilling es reconocida internacionalmente por su excelente calidad. Sus cuberterías, fabricadas en acero inoxidable 18/10, son sinónimo de resistencia y elegancia',
-            'logo' =>"Zwilling.jpeg"
-        ]);
-        Brand::create([
-            'name'=>'Arcos',
-            'description'=>'Arcos es otra marca española con gran prestigio. Famosa por sus cuchillos, la cubertería Arcos destaca por su gran calidad y diseño elegante.',
-            'logo' =>"Arcos.jpeg"
-        ]);
-        Brand::create([
-            'name'=>'Exzact',
-            'description'=>'Exzact es una marca británica que ofrece cuberterías de diseño moderno y minimalista. Sus productos, asequibles y de buena calidad, son perfectos para el día a día.',
-            'logo' =>"Exzact.jpeg"
+            'name' => 'Samsung',
+            'slug'=> 'Samsung',
+            'image' => 'brands/01HZS5PRD6AKRSMWY8Q69GR7H5.png'
+
         ]);
 
+        Brand::create([
+            'name' => 'Nokia',
+            'slug'=> 'Nokia',
+            'image' => 'brands/01HZS5BVWCDQD25KY14PEHVBD3.jpg'
+
+        ]);
+
+        Brand::create([
+            'name' => 'Apple',
+            'slug'=> 'Apple',
+            'image' => 'brands/01HZS5CRRQH67YCBHTAFQH3Y8A.jpg'
+
+        ]);
+
+        Brand::create([
+            'name' => 'Lg',
+            'slug'=> 'Lg',
+            'image' => 'brands/01HZS5DJ91H5MXY0MGTV5QCKGG.png'
+
+        ]);
+
+        Brand::create([
+            'name' => 'Hp',
+            'slug'=> 'Hp',
+            'image' => 'brands/01HZS5E9BPEV43693Y2VC1YM54.jpg'
+
+        ]);
+
+        Brand::create([
+            'name' => 'Sony',
+            'slug'=> 'Sony',
+            'image' => 'brands/01HZS5EY8Q2316BJS4MBWX2M5A.jpg'
+
+        ]);
     }
 }

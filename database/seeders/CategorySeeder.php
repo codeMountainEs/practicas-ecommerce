@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\Category;
-use Illuminate\Database\Seeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
 
 class CategorySeeder extends Seeder
 {
@@ -14,12 +14,39 @@ class CategorySeeder extends Seeder
     public function run(): void
     {
         Category::create([
-            'name'=>'Vajilla',
-            'description'=>'Aquí se incluyen todos los productos como platos, vasos o similares',
+            'name' => 'Smartphone',
+            'slug'=> 'Smartphone',
+
         ]);
+
         Category::create([
-            'name'=>'Cubiertos',
-            'description'=>'En este categoría se podrán encontrar cuchcaras, tenedores y cuchillos de diferentes tamaños y tipos',
+            'name' => 'PC',
+            'slug'=> 'PC',
+
+        ]);
+
+        Category::create([
+            'name' => 'Tablet',
+            'slug'=> 'Tablet',
+
+        ]);
+
+        Category::create([
+            'name' => 'Televisor',
+            'slug'=> 'Televisor',
+
+        ]);
+
+        Category::create([
+            'name' => 'Laptops',
+            'slug'=> 'Laptops',
+
+        ]);
+
+        Category::create([
+            'name' => 'Smartwatches',
+            'slug'=> 'Smartwatches',
+
         ]);
     }
 }
