@@ -19,7 +19,7 @@ class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
 
-    protected static ?int $navigationSort = 20;
+    protected static ?int $navigationSort = 100;
 
     public static function getNavigationGroup(): ?string
     {
@@ -43,8 +43,11 @@ class OrderResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Grid::make()
-                    ->columns(3)
+                    ->columns(2)
                     ->schema([
+                        Forms\Components\TextInput::make('created_at')
+                            ->label(__('Fecha'))
+                            ->required(),
                         Forms\Components\Select::make('user_id')
                             ->relationship('user', 'name')
                             ->label('Cliente')
@@ -53,8 +56,8 @@ class OrderResource extends Resource
                             ->required(),
                         Forms\Components\TextInput::make('grand_total')
                             ->numeric(2)
-                            ->label(__('Total')),
-                            // ->alignment(Alignment::Right)
+                            ->label(__('Total'))
+                            ->inputMode('decimal'),
                         Forms\Components\TextInput::make('currency')
                             ->label(__('Moneda'))
                             ->default('Euros'),
@@ -66,32 +69,25 @@ class OrderResource extends Resource
                             ->label(__('Situación'))
                             ->inline()
                             ->required()
-                            ->default('new')
-                            ->options([
-                                'new' => 'Nuevo',
-                                'processing' => 'En proceso',
-                                'shipped' => 'Enviado',
-                                'delivered' => 'Entregado',
-                                'canceled' => 'Rechazado',
-                            ])
+                            ->default('Nuevo')
                             ->colors([
-                                'new' => 'primary',
-                                'processing' => 'warning',
-                                'shipped' => 'info',
-                                'delivered' => 'success',
-                                'canceled' => 'danger',
+                                'Nuevo' => 'primary',
+                                'Procesando' => 'warning',
+                                'Enviado' => 'info',
+                                'Entregado' => 'success',
+                                'Cancelado' => 'danger',
                             ])
                             ->icons([
-                                'new' => 'heroicon-m-sparkles',
-                                'processing' => 'heroicon-m-arrow-path',
-                                'shipped' => 'heroicon-m-truck',
-                                'delivered' => 'heroicon-m-check-badge',
-                                'canceled' => 'heroicon-m-x-circle',
+                                'Nuevo' => 'heroicon-m-sparkles',
+                                'Procesando' => 'heroicon-m-arrow-path',
+                                'Enviado' => 'heroicon-m-truck',
+                                'Entregado' => 'heroicon-m-check-badge',
+                                'Cancelado' => 'heroicon-m-x-circle',
                             ]),
                         Forms\Components\TextInput::make('shipping_amount')
                             ->numeric()
-                            ->label(__('Cantidad Enviada')),
-                            // ->alignment(Alignment::Right)
+                            ->label(__('Cantidad Enviada'))
+                            ->inputMode('numeric'),
                         Forms\Components\TextInput::make('shipping_method')
                             ->label(__('Método de envío')),
                         Forms\Components\Textarea::make('notes')
@@ -140,11 +136,11 @@ class OrderResource extends Resource
                 ->searchable()
                 ->alignment(Alignment::Center)
                 ->color(fn (string $state):string => match ($state) {
-                    'new' => 'primary',
-                    'processing' => 'warning',
-                    'shipped' => 'info',
-                    'delivered' => 'success',
-                    'canceled' => 'danger',
+                    'Nuevo' => 'primary',
+                    'Procesando' => 'warning',
+                    'Enviado' => 'info',
+                    'Entregado' => 'success',
+                    'Cancelado' => 'danger',
                 }),
             Tables\Columns\TextColumn::make('shipping_amount')
                 ->numeric()
@@ -153,10 +149,6 @@ class OrderResource extends Resource
             Tables\Columns\TextColumn::make('shipping_method')
                 ->label(__('Método de envío'))
                 ->searchable(),
-/*             Tables\Columns\TextColumn::make('notes')
-                ->label(__('Notas'))
-                ->limit(100)
-                ->searchable(),*/
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('user_id')
@@ -164,14 +156,7 @@ class OrderResource extends Resource
                     ->options(User::pluck('name', 'id'))
                     ->searchable(),
                 Tables\Filters\SelectFilter::make('status')
-                    ->label(__('Situación'))
-                    ->options([
-                        'new' => 'Nuevo',
-                        'processing' => 'En proceso',
-                        'shipped' => 'Enviado',
-                        'delivered' => 'Entregado',
-                        'canceled' => 'Rechazado',
-                    ]),
+                    ->label(__('Situación')),
             ])
             ->actions([ // Acciones sobre la línea correspondiente.
                 Tables\Actions\ViewAction::make(),
@@ -199,8 +184,8 @@ class OrderResource extends Resource
     {
         return [
             'index' => Pages\ListOrders::route('/'),
-            'view' => Pages\ViewOrder::route('/{record}'),
             'create' => Pages\CreateOrder::route('/create'),
+            'view' => Pages\ViewOrder::route('/{record}'),
             'edit' => Pages\EditOrder::route('/{record}/edit'),
         ];
     }
