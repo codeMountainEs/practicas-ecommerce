@@ -8,9 +8,13 @@ use App\Models\Category;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Textarea;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Forms\Components\FileUpload;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\CategoryResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -35,31 +39,36 @@ class CategoryResource extends Resource
                 TextInput::make('name')
                     ->autofocus()
                     ->required()
-                    ->minLength(2)
-                    ->maxLength(100)
-                    ->unique(static::getModel(),'name', ignoreRecord:true)
+                    ->minLength(3)
+                    ->maxLength(200)
+                    ->unique(static::getModel(), 'name', ignoreRecord: true)
                     ->label(__('Nombre'))
                     ->columnSpanFull(),
-                Textarea::make('description')
-                    ->label(__('Descripción'))
-                    ->rows(3)
+                FileUpload::make('image')
+                    ->label(__('Imagen'))
+                    ->Image()
+                    ->maxSize(4096)
+                    ->placeholder(__('Imagen de la categoria'))
                     ->columnSpanFull(),
-            ]);
+                Checkbox::make('is_active')
+                    ->columns(2)
+                    ->label(__('está activa')),
+        ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
+                ImageColumn::make('Image')
+                    ->label(__('Imagen')),
                 TextColumn::make('name')
                     ->label(__('Nombre'))
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('description')
-                    ->label(__('Descripción'))
-                    ->limit(50)
-                    ->searchable()
-                    ->sortable(),
+                IconColumn::make('is_active')
+                    ->boolean()
+                    ->label(__('Activa')),
             ])
             ->filters([
                 //
