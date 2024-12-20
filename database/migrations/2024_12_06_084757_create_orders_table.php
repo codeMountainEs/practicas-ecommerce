@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\OrderStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -17,7 +18,7 @@ return new class extends Migration
             $table->decimal('grand_total',10,2)->nullable();
             $table->string('payment_method')->nullable();
             $table->string('payment_status')->nullable();
-            $table->enum('status',['Nuevo','Procesando','Enviado','Entregado','Cancelado'])->default('Nuevo');
+            $table->enum('status',['Nuevo','Procesando','Enviado','Entregado','Cancelado'])->default(OrderStatus::Nuevo);
             $table->string('currency')->nullable();
             $table->integer('shipping_amount')->nullable();
             $table->string('shipping_method')->nullable();

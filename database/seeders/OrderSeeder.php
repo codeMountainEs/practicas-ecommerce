@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\OrderStatus;
 use App\Models\Order;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -18,7 +19,7 @@ class OrderSeeder extends Seeder
             'grand_total' => 110,
             'payment_method' => 'Tarjeta de crédito',
             'payment_status' => 'Pagado',
-            'status' => 'Enviado',
+            'status' => OrderStatus::Enviado,
             'currency' => 'Euros',
             'shipping_amount' => 10,
             'shipping_method' => 'Por Seur',
@@ -30,7 +31,7 @@ class OrderSeeder extends Seeder
             'grand_total' => 220,
             'payment_method' => 'En efectivo',
             'payment_status' => 'Se paga en destino',
-            'status' => 'Nuevo',
+            'status' => OrderStatus::Nuevo,
             'currency' => 'Euros',
             'shipping_amount' => 20,
             'shipping_method' => 'Se enviará por correos',
