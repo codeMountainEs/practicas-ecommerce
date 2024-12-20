@@ -16,37 +16,37 @@ class CategorySeeder extends Seeder
         Category::create([
             'name' => 'Smartphone',
             'slug'=> 'Smartphone',
-           
+
         ]);
 
         Category::create([
             'name' => 'PC',
             'slug'=> 'PC',
-           
+
         ]);
 
         Category::create([
             'name' => 'Tablet',
             'slug'=> 'Tablet',
-           
+
         ]);
 
         Category::create([
             'name' => 'Televisor',
             'slug'=> 'Televisor',
-           
+
         ]);
 
         Category::create([
             'name' => 'Laptops',
             'slug'=> 'Laptops',
-           
+
         ]);
 
         Category::create([
             'name' => 'Smartwatches',
             'slug'=> 'Smartwatches',
-           
+
         ]);
     }
 }

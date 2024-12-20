@@ -9,8 +9,10 @@ use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Textarea;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\ImageColumn;
@@ -26,7 +28,7 @@ class ProductResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
 
-    protected static ?int $navigationSort= 20;
+    protected static ?int $navigationSort= 10;
 
     public static function getNavigationGroup(): ?string
     {
@@ -37,6 +39,10 @@ class ProductResource extends Resource
     {
         return $form
             ->schema([
+                Select::make('category_id')
+                    ->relationship('category', 'name'),
+                Select::make('brand_id')
+                    ->relationship('brand', 'name'),
                 TextInput::make('name')
                     ->autofocus()
                     ->required()
@@ -63,13 +69,22 @@ class ProductResource extends Resource
                             ->maxLength(200)
                             ->label(__('Precio'))
                             ->Columns(2),
-                        TextInput::make('stock')
-                            ->minLength(1)
-                            ->maxLength(200)
+                        Checkbox::make('in_stock')
+                            ->label(__('Hay en stock'))
                             ->columns(2),
-                    ])->columns(3),
-                    Checkbox::make('isLimited')
-                        ->label(__('Tiene stock limitado')),
+                        Checkbox::make('is_featured')
+                            ->columns(2),
+
+                        Checkbox::make('on_sale')
+                             ->columns(2)
+                             ->label(__('En venta')),
+                        Checkbox::make('is_active')
+                            ->columns(2)
+                            ->label(__('está activa')),
+
+                        Checkbox::make('isLimited')
+                            ->label(__('Tiene stock limitado')),
+                     ])->columns(3)
 
             ]);
     }
@@ -79,23 +94,32 @@ class ProductResource extends Resource
         return $table
             ->columns([
                 ImageColumn::make('Image')
-                    ->label(__('Imagem')),
+                    ->label(__('Imagen')),
                 TextColumn::make('name')
                     ->label(__('Nombre'))
+                    ->description(fn (Product $producto): string => $producto->description)
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('description')
-                    ->label(__('Descripción'))
-                    ->limit(50)
+                TextColumn::make('category.name')
+                    ->label(__('categoria'))
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('price')
                     ->label(__('precio'))
                     ->sortable()
                     ->money('eur'),
-                TextColumn::make('isLimited')
-                    ->label(__('Stock'))
-                    ->formatStateUsing( fn (Product $product)=> $product->isLimited? $product->stock : 'No'),
+                IconColumn::make('in_stock')
+                    ->boolean()
+                    ->label(__('Stock')),
+                IconColumn::make('is_active')
+                    ->boolean()
+                    ->label(__('Activa')),
+                IconColumn::make('is_featured')
+                    ->boolean()
+                    ->label(__('disponible')),
+                IconColumn::make('on_sale')
+                    ->boolean()
+                    ->label(__('En Venta')),
                 textColumn::make('created_at')
                     ->label(__('Creado'))
                     ->sortable()
