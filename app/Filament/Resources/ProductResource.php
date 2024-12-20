@@ -55,7 +55,7 @@ class ProductResource extends Resource
                     ->label(__('Descripción'))
                     ->rows(3)
                     ->columnSpanFull(),
-                FileUpload::make('image')
+                FileUpload::make('images')
                     ->label(__('Imagen'))
                     ->Image()
                     ->maxSize(4096)
@@ -93,7 +93,7 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
-                ImageColumn::make('Image')
+                ImageColumn::make('images')
                     ->label(__('Imagen')),
                 TextColumn::make('name')
                     ->label(__('Nombre'))
