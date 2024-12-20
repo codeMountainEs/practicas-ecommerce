@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\OrderStatus;
 use App\Filament\Resources\OrderResource\Pages;
 use App\Filament\Resources\OrderResource\RelationManagers;
 use App\Models\Order;
@@ -45,51 +46,57 @@ class OrderResource extends Resource
                 Forms\Components\Grid::make()
                     ->columns(2)
                     ->schema([
-                        Forms\Components\TextInput::make('created_at')
+                        Forms\Components\TextInput::make('id')
+                            ->label(__('Número Pedido'))
+                            ->disabled(),
+                        Forms\Components\DatePicker::make('created_at')
                             ->label(__('Fecha'))
                             ->required(),
                         Forms\Components\Select::make('user_id')
-                            ->relationship('user', 'name')
                             ->label('Cliente')
+                            ->placeholder(__('Selecciona un Cliente'))
+                            ->options(
+                                User::query()
+                                    ->orderBy('name')
+                                    ->pluck('name', 'id')
+                            )
+                            ->required()
                             ->searchable()
-                            ->preload()
-                            ->required(),
-                        Forms\Components\TextInput::make('grand_total')
-                            ->numeric(2)
-                            ->label(__('Total'))
-                            ->inputMode('decimal'),
-                        Forms\Components\TextInput::make('currency')
-                            ->label(__('Moneda'))
-                            ->default('Euros'),
-                        Forms\Components\TextInput::make('payment_method')
-                            ->label(__('Método de pago')),
-                        Forms\Components\TextInput::make('payment_status')
-                            ->label(__('Estado del pago')),
+                            ->reactive()
+                            ->preload(),
                         Forms\Components\ToggleButtons::make('status')
                             ->label(__('Situación'))
                             ->inline()
                             ->required()
-                            ->default('Nuevo')
-                            ->colors([
-                                'Nuevo' => 'primary',
-                                'Procesando' => 'warning',
-                                'Enviado' => 'info',
-                                'Entregado' => 'success',
-                                'Cancelado' => 'danger',
-                            ])
-                            ->icons([
-                                'Nuevo' => 'heroicon-m-sparkles',
-                                'Procesando' => 'heroicon-m-arrow-path',
-                                'Enviado' => 'heroicon-m-truck',
-                                'Entregado' => 'heroicon-m-check-badge',
-                                'Cancelado' => 'heroicon-m-x-circle',
-                            ]),
+                            ->default(OrderStatus::Nuevo)
+                            ->options(OrderStatus::class),
+                        Forms\Components\TextInput::make('grand_total')
+                            ->label(__('Total'))
+                            ->numeric()
+                            ->minValue(-9999999.99)
+                            ->maxValue(99999999.99)
+                            ->default(0)
+                            ->inputMode('decimal'),
+                        Forms\Components\TextInput::make('currency')
+                            ->label(__('Moneda'))
+                            ->maxLength(255)
+                            ->default('Euros'),
+                        Forms\Components\TextInput::make('payment_method')
+                            ->label(__('Método de pago'))
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('payment_status')
+                            ->label(__('Estado del pago'))
+                            ->maxLength(255),
                         Forms\Components\TextInput::make('shipping_amount')
                             ->numeric()
                             ->label(__('Cantidad Enviada'))
-                            ->inputMode('numeric'),
+                            ->default(0)
+                            ->inputMode('numeric')
+                            ->minValue(-2147483648)
+                            ->maxValue(2147483647),
                         Forms\Components\TextInput::make('shipping_method')
-                            ->label(__('Método de envío')),
+                            ->label(__('Método de envío'))
+                            ->maxLength(255),
                         Forms\Components\Textarea::make('notes')
                             ->label(__('Notas'))
                             ->columnSpanFull(),
@@ -110,7 +117,7 @@ class OrderResource extends Resource
                 ->alignment(Alignment::Center),
             Tables\Columns\TextColumn::make('created_at')
                 ->label(__('Fecha'))
-                ->date('d-m-Y')
+                ->date('d/m/Y')
                 ->sortable()
                 ->searchable(),
             Tables\Columns\TextColumn::make('user.name')
@@ -136,7 +143,7 @@ class OrderResource extends Resource
                 ->searchable()
                 ->alignment(Alignment::Center)
                 ->color(fn (string $state):string => match ($state) {
-                    'Nuevo' => 'primary',
+                    'Nuevo' => 'gray',
                     'Procesando' => 'warning',
                     'Enviado' => 'info',
                     'Entregado' => 'success',
@@ -153,15 +160,21 @@ class OrderResource extends Resource
             ->filters([
                 Tables\Filters\SelectFilter::make('user_id')
                     ->label(__('Cliente'))
-                    ->options(User::pluck('name', 'id'))
+                    ->placeholder(__('Selecciona un Cliente'))
+                    ->options(
+                        User::query()
+                            ->orderBy('name')
+                            ->pluck('name', 'id')
+                    )
                     ->searchable(),
                 Tables\Filters\SelectFilter::make('status')
-                    ->label(__('Situación')),
+                    ->label(__('Situación'))
+                    ->options(OrderStatus::class),
             ])
             ->actions([ // Acciones sobre la línea correspondiente.
-                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
-            ])
+                Tables\Actions\DeleteAction::make(),
+                ])
             ->bulkActions([ // Acciones masivas sobre líneas seleccionadas.
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
@@ -176,7 +189,7 @@ class OrderResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\OrderItemsRelationManager::class,
         ];
     }
 
@@ -185,7 +198,6 @@ class OrderResource extends Resource
         return [
             'index' => Pages\ListOrders::route('/'),
             'create' => Pages\CreateOrder::route('/create'),
-            'view' => Pages\ViewOrder::route('/{record}'),
             'edit' => Pages\EditOrder::route('/{record}/edit'),
         ];
     }

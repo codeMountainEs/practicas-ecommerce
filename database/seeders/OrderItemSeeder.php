@@ -14,13 +14,12 @@ class OrderItemSeeder extends Seeder
      */
     public function run(): void
     {
-        $itemAleatorio = Product::inRandomOrder();
-        $primero = $itemAleatorio->first();
-        $segundo = $primero->skip(1)->take(1)->first();
+        $primero = 1;
+        $segundo = 2;
 
         OrderItem::create([
             'order_id' => 1,
-            'product_id' => $primero->id,
+            'product_id' => $primero,
             'quantity' => 4,
             'unit_amount' => 11,
             'total_amount' => 44,
@@ -28,7 +27,7 @@ class OrderItemSeeder extends Seeder
 
         OrderItem::create([
             'order_id' => 1,
-            'product_id' => $segundo->id,
+            'product_id' => $segundo,
             'quantity' => 6,
             'unit_amount' => 11,
             'total_amount' => 66,
@@ -36,7 +35,7 @@ class OrderItemSeeder extends Seeder
 
         OrderItem::create([
             'order_id' => 2,
-            'product_id' => $segundo->id,
+            'product_id' => $segundo,
             'quantity' => 8,
             'unit_amount' => 10,
             'total_amount' => 80,
@@ -44,7 +43,7 @@ class OrderItemSeeder extends Seeder
 
         OrderItem::create([
             'order_id' => 2,
-            'product_id' => $primero->id,
+            'product_id' => $primero,
             'quantity' => 10,
             'unit_amount' => 14,
             'total_amount' => 140,
