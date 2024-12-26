@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\OrderResource\RelationManagers;
 
+use App\Enums\ValoresMinMax;
 use App\Models\Product;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -59,9 +60,10 @@ class OrderItemsRelationManager extends RelationManager
                             ->integer()
                             ->label(__('Cantidad'))
                             ->default(1)
-                            ->minValue(-2147483648)
-                            ->maxValue(2147483647)
+                            ->minValue(ValoresMinMax::minCantidad->valorInt())
+                            ->maxValue(ValoresMinMax::maxCantidad->valorInt())
                             ->reactive()
+                            ->live(onBlur: true)
                             ->afterStateUpdated(
                                 function(Forms\Set $set, Forms\Get $get) {
                                     self::updateTotals($get, $set);
@@ -71,11 +73,15 @@ class OrderItemsRelationManager extends RelationManager
                             ->label(__('Precio unitario'))
                             ->numeric()
                             ->default(0)
+                            ->minValue(0)
+                            ->maxValue(ValoresMinMax::maxImporte->valorFloat())
                             ->readonly(),
                         Forms\Components\TextInput::make('total_amount')
                             ->label(__('Importe Total'))
                             ->numeric()
                             ->default(0)
+                            ->minValue(ValoresMinMax::minImporte->valorFloat())
+                            ->maxValue(ValoresMinMax::maxImporte->valorFloat())
                             ->readonly(),
                     ]),
             ]);

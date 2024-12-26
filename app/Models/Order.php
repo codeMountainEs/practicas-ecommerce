@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ValoresMinMax;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -42,6 +43,8 @@ class Order extends Model
             }
             return $item->quantity * $item->unit_amount;
         });
+        $this->shipping_amount = max(min($this->shipping_amount,ValoresMinMax::maxCantidad->valorInt()),ValoresMinMax::minCantidad->valorInt());
+        $this->grand_total = max(min($this->grand_total,ValoresMinMax::maxImporte->valorFloat()),ValoresMinMax::minImporte->valorFloat());
         $this->save(); // Guarda las modificaciones realizadas en el order.
     }
 
