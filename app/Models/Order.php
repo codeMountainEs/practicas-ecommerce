@@ -32,4 +32,27 @@ class Order extends Model
     public function orderitems():HasMany {
         return $this->hasMany(OrderItem::class);
     }
+
+    public function recalculateTotal(): void
+    {
+        $this->shipping_amount = 0;
+        $this->grand_total = $this->orderitems->sum(function (OrderItem $item) {
+            if (!empty($this->shipping_method)) {
+                $this->shipping_amount = $this->shipping_amount + $item->quantity;
+            }
+            return $item->quantity * $item->unit_amount;
+        });
+        $this->save(); // Guarda las modificaciones realizadas en el order.
+    }
+
+/*     protected static function booted()
+    {
+        static::created(function (Order $order) {
+            $order->recalculateTotal();
+        });
+
+        static::updated(function (Order $order) {
+            $order->recalculateTotal();
+        });
+    } */
 }

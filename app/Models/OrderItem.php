@@ -22,4 +22,19 @@ class OrderItem extends Model
     public function product():BelongsTo {
         return $this->belongsTo(Product::class);
     }
+
+    protected static function booted()
+    {
+        static::created(function (OrderItem $orderItem) {
+            $orderItem->order->recalculateTotal();
+        });
+
+        static::updated(function (OrderItem $orderItem) {
+            $orderItem->order->recalculateTotal();
+        });
+
+        static::deleted(function (OrderItem $orderItem) {
+            $orderItem->order->recalculateTotal();
+        });
+    }
 }
