@@ -13,6 +13,7 @@ use Filament\Resources\Resource;
 use Filament\Support\Enums\Alignment;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Support\RawJs;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -51,6 +52,7 @@ class OrderResource extends Resource
                             ->disabled(),
                         Forms\Components\DatePicker::make('created_at')
                             ->label(__('Fecha'))
+                            ->autofocus()
                             ->required(),
                         Forms\Components\Select::make('user_id')
                             ->label('Cliente')
@@ -73,10 +75,10 @@ class OrderResource extends Resource
                         Forms\Components\TextInput::make('grand_total')
                             ->label(__('Total'))
                             ->numeric()
-                            ->minValue(-9999999.99)
-                            ->maxValue(99999999.99)
                             ->default(0)
-                            ->inputMode('decimal'),
+                            ->mask(RawJs::make('$money($input)'))
+                            ->stripCharacters(',')
+                            ->disabled(),
                         Forms\Components\TextInput::make('currency')
                             ->label(__('Moneda'))
                             ->maxLength(255)
@@ -88,12 +90,10 @@ class OrderResource extends Resource
                             ->label(__('Estado del pago'))
                             ->maxLength(255),
                         Forms\Components\TextInput::make('shipping_amount')
-                            ->numeric()
+                            ->integer()
                             ->label(__('Cantidad Enviada'))
                             ->default(0)
-                            ->inputMode('numeric')
-                            ->minValue(-2147483648)
-                            ->maxValue(2147483647),
+                            ->disabled(),
                         Forms\Components\TextInput::make('shipping_method')
                             ->label(__('Método de envío'))
                             ->maxLength(255),

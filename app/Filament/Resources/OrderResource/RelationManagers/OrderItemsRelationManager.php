@@ -48,38 +48,34 @@ class OrderItemsRelationManager extends RelationManager
                             ->searchable()
                             ->reactive()
                             ->preload()
-                            ->afterStateUpdated(function (Forms\Components\Select $component, Forms\Set $set) {
+                            ->afterStateUpdated(function (Forms\Components\Select $component, Forms\Set $set, Forms\Get $get) {
                                 $product = Product::query()
                                     ->where('id', $component->getState())
                                     ->first();
                                 $set('unit_amount', $product?->price ?? 0);
-                            })
-                            ->afterStateUpdated(
-                                fn(Forms\Set $set, Forms\Get $get)
-                                =>
-                                $set('total_amount', $get('quantity')*$get('unit_amount'))
-                            ),
+                                self::updateTotals($get, $set);
+                            }),
                         Forms\Components\TextInput::make('quantity')
-                            ->numeric()
+                            ->integer()
                             ->label(__('Cantidad'))
                             ->default(1)
-                            ->inputMode('numeric')
                             ->minValue(-2147483648)
                             ->maxValue(2147483647)
+                            ->reactive()
                             ->afterStateUpdated(
-                                fn($state,Forms\Set $set, Forms\Get $get)
-                                =>
-                                $set('total_amount', $state*$get('unit_amount'))
+                                function(Forms\Set $set, Forms\Get $get) {
+                                    self::updateTotals($get, $set);
+                                }
                             ),
                         Forms\Components\TextInput::make('unit_amount')
                             ->label(__('Precio unitario'))
                             ->numeric()
-                            ->inputMode('decimal')
+                            ->default(0)
                             ->readonly(),
                         Forms\Components\TextInput::make('total_amount')
                             ->label(__('Importe Total'))
                             ->numeric()
-                            ->inputMode('decimal')
+                            ->default(0)
                             ->readonly(),
                     ]),
             ]);
@@ -90,6 +86,13 @@ class OrderItemsRelationManager extends RelationManager
         return $table
         ->recordTitleAttribute('id')
         ->columns([
+            Tables\Columns\TextColumn::make('id')
+                ->label(__('Línea'))
+                ->sortable()
+                ->searchable()
+                ->prefix('#')
+                ->suffix('#')
+                ->alignment(Alignment::Center),
             Tables\Columns\TextColumn::make('product.name')
                 ->label(__('Producto'))
                 ->searchable()
@@ -137,5 +140,17 @@ class OrderItemsRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make(),
             ])
             ->emptyStateDescription(__('No hay líneas de pedidos actualmente'));
+    }
+
+    public static function updateTotals($get, $set): void
+    {
+        $cantidad = $get('quantity');
+        $precio = $get('unit_amount');
+        if (is_numeric($cantidad) && is_numeric($precio)) {
+            $importe = $cantidad*$precio;
+        } else {
+            $importe = 0;
+        }
+        $set('total_amount', $importe);
     }
 }
