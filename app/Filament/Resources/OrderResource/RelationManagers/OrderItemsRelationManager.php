@@ -64,6 +64,7 @@ class OrderItemsRelationManager extends RelationManager
                             ->maxValue(ValoresMinMax::maxCantidad->valorInt())
                             ->reactive()
                             ->live(onBlur: true)
+                            ->extraInputAttributes(['style' => 'text-align: right;'])
                             ->afterStateUpdated(
                                 function(Forms\Set $set, Forms\Get $get) {
                                     self::updateTotals($get, $set);
@@ -75,6 +76,7 @@ class OrderItemsRelationManager extends RelationManager
                             ->default(0)
                             ->minValue(0)
                             ->maxValue(ValoresMinMax::maxImporte->valorFloat())
+                            ->extraInputAttributes(['style' => 'text-align: right;'])
                             ->readonly(),
                         Forms\Components\TextInput::make('total_amount')
                             ->label(__('Importe Total'))
@@ -82,6 +84,7 @@ class OrderItemsRelationManager extends RelationManager
                             ->default(0)
                             ->minValue(ValoresMinMax::minImporte->valorFloat())
                             ->maxValue(ValoresMinMax::maxImporte->valorFloat())
+                            ->extraInputAttributes(['style' => 'text-align: right;'])
                             ->readonly(),
                     ]),
             ]);

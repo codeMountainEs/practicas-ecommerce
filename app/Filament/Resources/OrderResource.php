@@ -45,7 +45,6 @@ class OrderResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Grid::make()
-                    ->columns(2)
                     ->schema([
                         Forms\Components\TextInput::make('id')
                             ->label(__('Número Pedido'))
@@ -53,6 +52,7 @@ class OrderResource extends Resource
                         Forms\Components\DatePicker::make('created_at')
                             ->label(__('Fecha'))
                             ->autofocus()
+                            ->default(now())
                             ->required(),
                         Forms\Components\Select::make('user_id')
                             ->label('Cliente')
@@ -66,18 +66,17 @@ class OrderResource extends Resource
                             ->searchable()
                             ->reactive()
                             ->preload(),
-                        Forms\Components\ToggleButtons::make('status')
-                            ->label(__('Situación'))
-                            ->inline()
-                            ->required()
-                            ->default(OrderStatus::Nuevo)
-                            ->options(OrderStatus::class),
+                    ])
+                    ->columns(3),
+                Forms\Components\Grid::make()
+                    ->schema([
                         Forms\Components\TextInput::make('grand_total')
                             ->label(__('Total'))
                             ->numeric()
                             ->default(0)
                             ->mask(RawJs::make('$money($input)'))
                             ->stripCharacters(',')
+                            ->extraInputAttributes(['style' => 'text-align: right;'])
                             ->disabled(),
                         Forms\Components\TextInput::make('currency')
                             ->label(__('Moneda'))
@@ -93,14 +92,26 @@ class OrderResource extends Resource
                             ->integer()
                             ->label(__('Cantidad Enviada'))
                             ->default(0)
+                            ->extraInputAttributes(['style' => 'text-align: right;'])
                             ->disabled(),
                         Forms\Components\TextInput::make('shipping_method')
                             ->label(__('Método de envío'))
                             ->maxLength(255),
+                    ])
+                    ->columns(6),
+                Forms\Components\Grid::make()
+                    ->schema([
+                        Forms\Components\ToggleButtons::make('status')
+                            ->label(__('Situación'))
+                            ->inline()
+                            ->required()
+                            ->default(OrderStatus::Nuevo)
+                            ->options(OrderStatus::class)
+                            ->columnSpanFull(),
                         Forms\Components\Textarea::make('notes')
                             ->label(__('Notas'))
                             ->columnSpanFull(),
-                    ])
+                    ])->columns(1),
             ]);
     }
 
@@ -142,13 +153,8 @@ class OrderResource extends Resource
                 ->badge()
                 ->searchable()
                 ->alignment(Alignment::Center)
-                ->color(fn (string $state):string => match ($state) {
-                    'Nuevo' => 'gray',
-                    'Procesando' => 'warning',
-                    'Enviado' => 'info',
-                    'Entregado' => 'success',
-                    'Cancelado' => 'danger',
-                }),
+                ->formatStateUsing(fn (string $state): string => OrderStatus::from($state)->getLabel())
+                ->color(fn (string $state):string => OrderStatus::from($state)->getColor()),
             Tables\Columns\TextColumn::make('shipping_amount')
                 ->numeric()
                 ->label(__('Cantidad enviada'))

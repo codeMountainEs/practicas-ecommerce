@@ -20,6 +20,8 @@ class Order extends Model
         'shipping_amount',
         'shipping_method',
         'notes',
+        'created_at',
+        'updated_at',
     ];
 
     public function user():BelongsTo {
@@ -38,24 +40,11 @@ class Order extends Model
     {
         $this->shipping_amount = 0;
         $this->grand_total = $this->orderitems->sum(function (OrderItem $item) {
-            if (!empty($this->shipping_method)) {
-                $this->shipping_amount = $this->shipping_amount + $item->quantity;
-            }
+            $this->shipping_amount = $this->shipping_amount + $item->quantity;
             return $item->quantity * $item->unit_amount;
         });
         $this->shipping_amount = max(min($this->shipping_amount,ValoresMinMax::maxCantidad->valorInt()),ValoresMinMax::minCantidad->valorInt());
         $this->grand_total = max(min($this->grand_total,ValoresMinMax::maxImporte->valorFloat()),ValoresMinMax::minImporte->valorFloat());
-        $this->save(); // Guarda las modificaciones realizadas en el order.
+        $this->save();  // Guarda las modificaciones realizadas en el order.
     }
-
-/*     protected static function booted()
-    {
-        static::created(function (Order $order) {
-            $order->recalculateTotal();
-        });
-
-        static::updated(function (Order $order) {
-            $order->recalculateTotal();
-        });
-    } */
 }
