@@ -8,6 +8,7 @@ use App\Filament\Resources\OrderResource\RelationManagers;
 use App\Models\Order;
 use App\Models\User;
 use Filament\Forms;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\Alignment;
@@ -72,12 +73,20 @@ class OrderResource extends Resource
                     ->schema([
                         Forms\Components\TextInput::make('grand_total')
                             ->label(__('Total'))
+                           
                             ->numeric()
                             ->default(0)
                             ->mask(RawJs::make('$money($input)'))
                             ->stripCharacters(',')
                             ->extraInputAttributes(['style' => 'text-align: right;'])
-                            ->disabled(),
+                            ->disabled()
+                            ,
+
+                        Forms\Components\Placeholder::make('total')
+                            ->label('Total calculado')
+                            ->live()
+                            ->content(fn (Order $record): string => $record->totalCalculated()),
+
                         Forms\Components\TextInput::make('currency')
                             ->label(__('Moneda'))
                             ->maxLength(255)

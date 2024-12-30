@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\OrderResource\RelationManagers;
 
 use App\Enums\ValoresMinMax;
+use App\Models\OrderItem;
 use App\Models\Product;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -13,6 +14,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Livewire\Component;
 
 class OrderItemsRelationManager extends RelationManager
 {
@@ -134,11 +136,27 @@ class OrderItemsRelationManager extends RelationManager
                 ->searchable(),
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make()
+                ->label('nueva')
+                ->after(function (Component $livewire, OrderItem $orderItem) {
+                   // dd($orderItem); 
+                    $livewire->dispatch('refreshOrderLines',$orderItem); 
+                }),
+              
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+
+                Tables\Actions\EditAction::make()
+                ->successNotificationTitle('Registro Actualizado')
+                ->after(function (Component $livewire, OrderItem $orderItem) {
+                    $livewire->dispatch('refreshOrderLines',  $orderItem); 
+                }),
+                
+                Tables\Actions\DeleteAction::make()
+                ->after(function (Component $livewire, OrderItem $orderItem) {
+                    $livewire->dispatch('refreshOrderLines',  $orderItem); 
+                }),
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -146,7 +164,11 @@ class OrderItemsRelationManager extends RelationManager
                 ]),
             ])
             ->emptyStateActions([
-                Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make()
+                ->after(function (Component $livewire, OrderItem $orderItem) {
+                    $livewire->dispatch('refreshOrderLines',  $orderItem); 
+                }),
+
             ])
             ->emptyStateDescription(__('No hay líneas de pedidos actualmente'));
     }
