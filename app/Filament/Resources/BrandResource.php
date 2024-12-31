@@ -61,7 +61,7 @@ class BrandResource extends Resource
     {
         return $table
             ->columns([
-                ImageColumn::make('Image')
+                ImageColumn::make('image')
                     ->label(__('Imagen')),
                 TextColumn::make('name')
                     ->label(__('Nombre'))
@@ -76,6 +76,7 @@ class BrandResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
