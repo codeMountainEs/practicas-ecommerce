@@ -14,6 +14,7 @@ use Filament\Support\Enums\Alignment;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Support\RawJs;
+use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -77,7 +78,11 @@ class OrderResource extends Resource
                             ->mask(RawJs::make('$money($input)'))
                             ->stripCharacters(',')
                             ->extraInputAttributes(['style' => 'text-align: right;'])
-                            ->disabled(),
+                            ->disabled()
+                            ->dehydrated(false)
+                            ->afterStateHydrated(function (TextInput $component, $record) {
+                                $component->state($record->grand_total ?? 0);
+                            }),
                         Forms\Components\TextInput::make('currency')
                             ->label(__('Moneda'))
                             ->maxLength(255)
@@ -93,7 +98,11 @@ class OrderResource extends Resource
                             ->label(__('Cantidad Enviada'))
                             ->default(0)
                             ->extraInputAttributes(['style' => 'text-align: right;'])
-                            ->disabled(),
+                            ->disabled()
+                            ->dehydrated(false)
+                            ->afterStateHydrated(function (TextInput $component, $record) {
+                                $component->state($record->shipping_amount ?? 0);
+                            }),
                         Forms\Components\TextInput::make('shipping_method')
                             ->label(__('Método de envío'))
                             ->maxLength(255),
@@ -101,16 +110,17 @@ class OrderResource extends Resource
                     ->columns(6),
                 Forms\Components\Grid::make()
                     ->schema([
+                        Forms\Components\Textarea::make('notes')
+                            ->label(__('Notas'))
+                            ->columnSpanFull(),
                         Forms\Components\ToggleButtons::make('status')
                             ->label(__('Situación'))
                             ->inline()
                             ->required()
                             ->default(OrderStatus::Nuevo)
                             ->options(OrderStatus::class)
-                            ->columnSpanFull(),
-                        Forms\Components\Textarea::make('notes')
-                            ->label(__('Notas'))
-                            ->columnSpanFull(),
+                            ->columnSpanFull()
+                            ->hidden(fn ($record) => $record === null || !$record->address()->exists()),
                     ])->columns(1),
             ]);
     }
