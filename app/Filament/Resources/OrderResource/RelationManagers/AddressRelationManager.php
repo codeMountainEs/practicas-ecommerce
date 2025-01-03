@@ -10,6 +10,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Livewire\Component;
 
 class AddressRelationManager extends RelationManager
 {
@@ -71,37 +72,29 @@ class AddressRelationManager extends RelationManager
     {
         return $table
             ->recordTitleAttribute('id')
+            ->paginated(false)
             ->columns([
-            Tables\Columns\TextColumn::make('first_name')
-                ->label(__('Nombre'))
-                ->sortable()
-                ->searchable(),
-            Tables\Columns\TextColumn::make('last_name')
-                ->label(__('Apellidos'))
-                ->sortable()
-                ->searchable(),
+            Tables\Columns\TextColumn::make('nombre_completo')
+                ->label(__('Nombre y Apellidos')),
             Tables\Columns\TextColumn::make('phone')
-                ->label(__('Teléfono'))
-                ->searchable(),
+                ->label(__('Teléfono')),
             Tables\Columns\TextColumn::make('zip_code')
-                ->label(__('C.postal/Zip Code'))
-                ->searchable(),
+                ->label(__('C.postal/Zip Code')),
             Tables\Columns\TextColumn::make('city')
-                ->label(__('Localidad/Ciudad'))
-                ->searchable(),
+                ->label(__('Localidad/Ciudad')),
             Tables\Columns\TextColumn::make('state')
-                ->label(__('Provincia/Estado'))
-                ->searchable(),
-            ])
-            ->filters([
-                //
+                ->label(__('Provincia/Estado')),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->modalHeading('Editar Dirección de envío del pedido'),
             ])
             ->emptyStateActions([
-                Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make()
+                    ->createAnother(false)
+                    ->after(function (Component $livewire) {
+                        $livewire->dispatch('pedidoActualizado');
+                    }),
             ])
             ->emptyStateDescription(__('No hay direcciones de envío actualmente'));
     }
