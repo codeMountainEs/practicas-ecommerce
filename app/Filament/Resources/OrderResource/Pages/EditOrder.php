@@ -34,4 +34,21 @@ class EditOrder extends EditRecord
       
         
     }
+
+    protected function getListeners(): array
+    {
+        return array_merge(
+            parent::getListeners(),
+            [
+                'pedidoActualizado' => 'refrescarPedido',
+            ]
+        );
+    }
+
+    public function refrescarPedido()
+    {
+        $this->record->recalculateTotal();
+        $this->record->refresh();
+        $this->fillForm();
+    }
 }
