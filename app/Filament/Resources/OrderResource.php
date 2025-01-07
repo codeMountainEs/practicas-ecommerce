@@ -97,10 +97,10 @@ class OrderResource extends Resource
                                     ->extraInputAttributes(['style' => 'text-align: right;'])
                                     ->disabled(),
     
-                                Forms\Components\Placeholder::make('total')
+                                /*Forms\Components\Placeholder::make('total')
                                     ->label('Total calculado')
                                     ->live()
-                                    ->content(fn (Order $record): string => $record->totalCalculated()),
+                                    ->content(fn (Order $record): string => $record->totalCalculated()),*/
     
                             ])
                             ->columns(2),
