@@ -39,10 +39,12 @@ class Order extends Model
     public function recalculateTotal(): void
     {
         $this->shipping_amount = 0;
+        //$this->shipping_amount = $this->totalCalculated();
+
         //dd($this->orderitems);
         $this->grand_total = 0;
         
-            $this->orderitems->sum(function (OrderItem $item) {
+        $this->grand_total=  $this->orderitems->sum(function (OrderItem $item) {
                 $this->shipping_amount = $this->shipping_amount + $item->quantity;
                 return $item->quantity * $item->unit_amount;
             });
@@ -51,6 +53,8 @@ class Order extends Model
         $this->shipping_amount = max(min($this->shipping_amount,ValoresMinMax::maxCantidad->valorInt()),ValoresMinMax::minCantidad->valorInt());
         $this->grand_total = max(min($this->grand_total,ValoresMinMax::maxImporte->valorFloat()),ValoresMinMax::minImporte->valorFloat());
         $this->save();  // Guarda las modificaciones realizadas en el order.
+    //dd( $this->grand_total,$this->shipping_amount);
+    
     }
 
     public function totalCalculated(): float

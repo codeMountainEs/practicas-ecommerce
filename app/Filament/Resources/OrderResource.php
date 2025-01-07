@@ -9,6 +9,7 @@ use App\Models\Order;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\Alignment;
@@ -73,7 +74,8 @@ class OrderResource extends Resource
                                     ->columnSpanFull()
                                     ->reactive()
                                     ->preload(),
-                                    Forms\Components\TextInput::make('grand_total')
+                                    
+                                Forms\Components\TextInput::make('grand_total')
                                     ->label(__('Total'))
                                 
                                     ->numeric()
@@ -82,7 +84,11 @@ class OrderResource extends Resource
                                     ->stripCharacters(',')
                                     ->extraInputAttributes(['style' => 'text-align: right;'])
                                     ->disabled()
+                                    ->dehydrated(false)
+                                   
+                                  
                                     ,
+
 
                                 Forms\Components\TextInput::make('shipping_amount')
                                     ->integer()
