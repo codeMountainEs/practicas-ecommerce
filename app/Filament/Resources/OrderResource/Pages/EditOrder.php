@@ -22,8 +22,10 @@ class EditOrder extends EditRecord
     #[On('refreshOrderLines')]
     public function updateOrder($record): void
     {
-        dd($record);
-      
+       
+        $orderItem = new OrderItem($record);
+       //dd( $orderItem->order);
+
             $order = $orderItem->order;
             $order->recalculateTotal();
             $order->save();
