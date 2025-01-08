@@ -149,16 +149,7 @@ class OrderItemsRelationManager extends RelationManager
                 Tables\Actions\EditAction::make()
                 ->successNotificationTitle('Registro Actualizado')
                 ->after(function (Component $livewire, OrderItem $orderItem) {
-                    
-              
-                    //dd('orderItem',$livewire->ownerRecord->update(['grand_total' => 999]),$livewire);
-                   
-
                     $livewire->dispatch('refreshOrderLines',  $orderItem); 
-                   // $livewire->dispatch('pedidoActualizado'); 
-                    //$livewire->ownerRecord->update(['grand_total' => 999]);
-                    
-
                 }),
                 
                 Tables\Actions\DeleteAction::make()
