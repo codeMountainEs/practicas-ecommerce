@@ -28,12 +28,7 @@ class EditOrder extends EditRecord
 
             $order = $orderItem->order;
             $order->recalculateTotal();
-            $order->refresh();
-
             $order->save();
-            
-            $this->refreshFormData(['grand_total']);
-            $this->refreshFormData(['shipping_amount']);
         
 
       
@@ -52,10 +47,8 @@ class EditOrder extends EditRecord
 
     public function refrescarPedido()
     {
-       
         $this->record->recalculateTotal();
         $this->record->refresh();
-       // dd('recalcular',  $this->record, $this->record->recalculateTotal(),$this->record->refresh());
         $this->fillForm();
     }
 }
