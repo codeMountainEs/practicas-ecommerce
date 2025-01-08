@@ -148,7 +148,6 @@ class OrderItemsRelationManager extends RelationManager
 
                 Tables\Actions\EditAction::make()
                 ->successNotificationTitle('Registro Actualizado')
-                ->modalHeading('Editar Línea de pedido')
                 ->after(function (Component $livewire, OrderItem $orderItem) {
                     
               
@@ -163,7 +162,6 @@ class OrderItemsRelationManager extends RelationManager
                 }),
                 
                 Tables\Actions\DeleteAction::make()
-                ->modalHeading('Borrar Línea de pedido')
                 ->after(function (Component $livewire, OrderItem $orderItem) {
                     $livewire->dispatch('refreshOrderLines', $orderItem); 
                 }),
