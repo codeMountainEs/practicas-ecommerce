@@ -8,6 +8,7 @@ use App\Models\Product;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use App\Filament\Clusters\Products;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Checkbox;
@@ -28,9 +29,11 @@ class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
+    protected static ?string $navigationIcon = 'heroicon-s-tag';
 
     protected static ?int $navigationSort= 10;
+
+    protected static ?string $cluster = Products::class;
 
     public static function getNavigationGroup(): ?string
     {

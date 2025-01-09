@@ -8,6 +8,7 @@ use App\Models\Category;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use App\Filament\Clusters\Products;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\IconColumn;
@@ -24,9 +25,12 @@ class CategoryResource extends Resource
 {
     protected static ?string $model = Category::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-square-3-stack-3d';
 
     protected static ?int $navigationSort= 20;
+
+    protected static ?string $cluster = Products::class;
+
     public static function getNavigationGroup(): ?string
     {
         return __('Almacén');
@@ -36,7 +40,7 @@ class CategoryResource extends Resource
     {
         return $form
             ->schema(
-                Category::getForm()    
+                Category::getForm()
             );
     }
 
