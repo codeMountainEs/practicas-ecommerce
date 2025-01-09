@@ -39,25 +39,9 @@ class CategoryResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([
-                TextInput::make('name')
-                    ->autofocus()
-                    ->required()
-                    ->minLength(3)
-                    ->maxLength(200)
-                    ->unique(static::getModel(), 'name', ignoreRecord: true)
-                    ->label(__('Nombre'))
-                    ->columnSpanFull(),
-                FileUpload::make('image')
-                    ->label(__('Imagen'))
-                    ->Image()
-                    ->maxSize(4096)
-                    ->placeholder(__('Imagen de la categoria'))
-                    ->columnSpanFull(),
-                Checkbox::make('is_active')
-                    ->columns(2)
-                    ->label(__('está activa')),
-        ]);
+            ->schema(
+                Category::getForm()    
+            );
     }
 
     public static function table(Table $table): Table
