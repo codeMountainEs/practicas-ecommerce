@@ -96,6 +96,6 @@ class AddressRelationManager extends RelationManager
                         $livewire->dispatch('pedidoActualizado');
                     }),
             ])
-            ->emptyStateDescription(__('No hay direcciones de envío actualmente'));
+            ->emptyStateDescription(__('No existen direcciones de envío actualmente'));
     }
 }
