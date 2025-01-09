@@ -25,7 +25,7 @@ class CategoryResource extends Resource
 {
     protected static ?string $model = Category::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-square-3-stack-3d';
 
     protected static ?int $navigationSort= 20;
 
@@ -40,7 +40,7 @@ class CategoryResource extends Resource
     {
         return $form
             ->schema(
-                Category::getForm()    
+                Category::getForm()
             );
     }
 
