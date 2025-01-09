@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\OrderResource\RelationManagers;
 
 use App\Enums\ValoresMinMax;
-use App\Models\OrderItem;
 use App\Models\Product;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -11,10 +10,10 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Support\Enums\Alignment;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Livewire\Component;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Livewire\Component;
 
 class OrderItemsRelationManager extends RelationManager
 {
@@ -97,12 +96,11 @@ class OrderItemsRelationManager extends RelationManager
         return $table
         ->recordTitleAttribute('id')
         ->columns([
-            Tables\Columns\TextColumn::make('id')
+            Tables\Columns\TextColumn::make('Linea')
                 ->label(__('Línea'))
-                ->sortable()
-                ->searchable()
                 ->prefix('#')
                 ->suffix('#')
+                ->rowindex()
                 ->alignment(Alignment::Center),
             Tables\Columns\TextColumn::make('product.name')
                 ->label(__('Producto'))
@@ -117,6 +115,7 @@ class OrderItemsRelationManager extends RelationManager
                 ->numeric(2)
                 ->label(__('Precio unitario'))
                 ->alignment(Alignment::Right)
+                ->sortable()
                 ->searchable(),
             Tables\Columns\TextColumn::make('total_amount')
                 ->numeric(2)
@@ -137,38 +136,36 @@ class OrderItemsRelationManager extends RelationManager
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()
-                ->label('nueva')
-                ->after(function (Component $livewire, OrderItem $orderItem) {
-                   // dd($orderItem); 
-                    $livewire->dispatch('refreshOrderLines',$orderItem); 
+                ->after(function (Component $livewire) {
+                    $livewire->dispatch('pedidoActualizado');
                 }),
-              
             ])
             ->actions([
-
                 Tables\Actions\EditAction::make()
-                ->successNotificationTitle('Registro Actualizado')
-                ->after(function (Component $livewire, OrderItem $orderItem) {
-                    $livewire->dispatch('refreshOrderLines',  $orderItem); 
-                }),
-                
+                    ->modalHeading('Editar Línea de pedido')
+                    ->after(function (Component $livewire) {
+                        $livewire->dispatch('pedidoActualizado');
+                    }),
                 Tables\Actions\DeleteAction::make()
-                ->after(function (Component $livewire, OrderItem $orderItem) {
-                    $livewire->dispatch('refreshOrderLines', $orderItem); 
-                }),
-
-            ])
+                    ->modalHeading('Borrar Línea de pedido')
+                    ->after(function (Component $livewire) {
+                        $livewire->dispatch('pedidoActualizado');
+                    }),
+                ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->modalHeading('Borrar Líneas de pedidos')
+                        ->after(function (Component $livewire) {
+                            $livewire->dispatch('pedidoActualizado');
+                        }),
                 ]),
             ])
             ->emptyStateActions([
                 Tables\Actions\CreateAction::make()
-                ->after(function (Component $livewire, OrderItem $orderItem) {
-                    $livewire->dispatch('refreshOrderLines',  $orderItem); 
+                ->after(function (Component $livewire) {
+                    $livewire->dispatch('pedidoActualizado');
                 }),
-
             ])
             ->emptyStateDescription(__('No hay líneas de pedidos actualmente'));
     }

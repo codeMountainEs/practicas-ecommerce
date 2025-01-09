@@ -8,13 +8,13 @@ use App\Filament\Resources\OrderResource\RelationManagers;
 use App\Models\Order;
 use App\Models\User;
 use Filament\Forms;
-use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\Alignment;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Support\RawJs;
+use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -45,106 +45,83 @@ class OrderResource extends Resource
     {
         return $form
             ->schema([
-
-                Forms\Components\Group::make([
-
-                    Forms\Components\Section::make('Datos del Documento')->schema(
-                        [
-                            Forms\Components\Grid::make()
-                            ->schema([
-                                Forms\Components\TextInput::make('id')
-                                    ->label(__('Número Pedido'))
-                                    ->disabled(),
-                                Forms\Components\DatePicker::make('created_at')
-                                    ->label(__('Fecha'))
-                                    ->autofocus()
-                                    ->default(now())
-                                    ->required(),
-                                Forms\Components\Select::make('user_id')
-                                    ->label('Cliente')
-                                    ->placeholder(__('Selecciona un Cliente'))
-                                    ->options(
-                                        User::query()
-                                            ->orderBy('name')
-                                            ->pluck('name', 'id')
-                                    )
-                                    ->required()
-                                    ->searchable()
-                                    ->columnSpanFull()
-                                    ->reactive()
-                                    ->preload(),
-                                    Forms\Components\TextInput::make('grand_total')
-                                    ->label(__('Total'))
-                                
-                                    ->numeric()
-                                    ->default(0)
-                                    ->mask(RawJs::make('$money($input)'))
-                                    ->stripCharacters(',')
-                                    ->extraInputAttributes(['style' => 'text-align: right;'])
-                                    ->disabled()
-                                    ,
-
-                                Forms\Components\TextInput::make('shipping_amount')
-                                    ->integer()
-                                    ->label(__('Cantidad Enviada'))
-                                    ->default(0)
-                                    ->extraInputAttributes(['style' => 'text-align: right;'])
-                                    ->disabled(),
-    
-                                Forms\Components\Placeholder::make('total')
-                                    ->label('Total calculado')
-                                    ->live()
-                                    ->content(fn (Order $record): string => $record->totalCalculated()),
-    
-                            ])
-                            ->columns(2),
-                            Forms\Components\Grid::make()
-                                ->schema([
-                                   
-                                    Forms\Components\Textarea::make('notes')
-                                        ->label(__('Notas'))
-                                        ->columnSpanFull(),
-                                ])->columns(1),
-            
-                        ])->columnSpan(2),
-                       
-                ])->columns(2),
-                Forms\Components\Group::make([
-
-                    Forms\Components\Section::make(' Metodos de Pago, envío y Situación')->schema([
-                       
-                        Forms\Components\Grid::make()
-                        ->schema([
-                           
-                            Forms\Components\TextInput::make('currency')
-                                ->label(__('Moneda'))
-                                ->maxLength(255)
-                                ->default('Euros'),
-                            Forms\Components\TextInput::make('payment_method')
-                                ->label(__('Método de pago'))
-                                ->maxLength(255),
-                            Forms\Components\TextInput::make('payment_status')
-                                ->label(__('Estado del pago'))
-                                ->maxLength(255),
-                           
-                            Forms\Components\TextInput::make('shipping_method')
-                                ->label(__('Método de envío'))
-                                ->maxLength(255),
-
-                                Forms\Components\ToggleButtons::make('status')
-                                ->label(__('Situación'))
-                                ->inline()
-                                ->required()
-                                ->default(OrderStatus::Nuevo)
-                                ->options(OrderStatus::class)
-                                ->columnSpanFull(),
-                        ])
-                        ->columns(2),
-
-        
-                    ])->columnSpan(2),
-                       
-                ])->columns(2),
+                Forms\Components\Grid::make()
+                    ->schema([
+                        Forms\Components\TextInput::make('id')
+                            ->label(__('Número Pedido'))
+                            ->disabled(),
+                        Forms\Components\DatePicker::make('created_at')
+                            ->label(__('Fecha'))
+                            ->autofocus()
+                            ->default(now())
+                            ->required(),
+                        Forms\Components\Select::make('user_id')
+                            ->label('Cliente')
+                            ->placeholder(__('Selecciona un Cliente'))
+                            ->options(
+                                User::query()
+                                    ->orderBy('name')
+                                    ->pluck('name', 'id')
+                            )
+                            ->required()
+                            ->searchable()
+                            ->reactive()
+                            ->preload(),
+                    ])
+                    ->columns(3),
+                Forms\Components\Grid::make()
+                    ->schema([
+                        Forms\Components\TextInput::make('grand_total')
+                            ->label(__('Total'))
+                            ->numeric()
+                            ->default(0)
+                            ->mask(RawJs::make('$money($input)'))
+                            ->stripCharacters(',')
+                            ->extraInputAttributes(['style' => 'text-align: right;'])
+                            ->disabled()
+                            ->dehydrated(false)
+                            ->afterStateHydrated(function (TextInput $component, $record) {
+                                $component->state($record->grand_total ?? 0);
+                            }),
+                        Forms\Components\TextInput::make('currency')
+                            ->label(__('Moneda'))
+                            ->maxLength(255)
+                            ->default('Euros'),
+                        Forms\Components\TextInput::make('payment_method')
+                            ->label(__('Método de pago'))
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('payment_status')
+                            ->label(__('Estado del pago'))
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('shipping_amount')
+                            ->integer()
+                            ->label(__('Cantidad Enviada'))
+                            ->default(0)
+                            ->extraInputAttributes(['style' => 'text-align: right;'])
+                            ->disabled()
+                            ->dehydrated(false)
+                            ->afterStateHydrated(function (TextInput $component, $record) {
+                                $component->state($record->shipping_amount ?? 0);
+                            }),
+                        Forms\Components\TextInput::make('shipping_method')
+                            ->label(__('Método de envío'))
+                            ->maxLength(255),
+                    ])
+                    ->columns(6),
+                Forms\Components\Grid::make()
+                    ->schema([
+                        Forms\Components\Textarea::make('notes')
+                            ->label(__('Notas'))
+                            ->columnSpanFull(),
+                        Forms\Components\ToggleButtons::make('status')
+                            ->label(__('Situación'))
+                            ->inline()
+                            ->required()
+                            ->default(OrderStatus::Nuevo)
+                            ->options(OrderStatus::class)
+                            ->columnSpanFull()
+                            ->hidden(fn ($record) => $record === null || !$record->address()->exists()),
+                    ])->columns(1),
             ]);
     }
 
@@ -229,6 +206,7 @@ class OrderResource extends Resource
     {
         return [
             RelationManagers\OrderItemsRelationManager::class,
+            RelationManagers\AddressRelationManager::class,
         ];
     }
 
