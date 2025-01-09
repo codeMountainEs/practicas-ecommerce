@@ -21,6 +21,8 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\ProductResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\ProductResource\RelationManagers;
+use App\Models\Brand;
+use App\Models\Category;
 
 class ProductResource extends Resource
 {
@@ -40,9 +42,21 @@ class ProductResource extends Resource
         return $form
             ->schema([
                 Select::make('category_id')
-                    ->relationship('category', 'name'),
+                    ->relationship('category', 'name')
+                    ->required()
+                    ->searchable()
+                    ->preload()
+                    ->createOptionForm(
+                        Category::getForm()
+                    ),
                 Select::make('brand_id')
-                    ->relationship('brand', 'name'),
+                    ->relationship('brand', 'name')
+                    ->required()
+                    ->searchable()
+                    ->preload()
+                    ->createOptionForm(
+                        Brand::getForm()
+                    ),
                 TextInput::make('name')
                     ->autofocus()
                     ->required()
